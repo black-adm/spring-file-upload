@@ -2,8 +2,11 @@ package com.blackadm.fileupload.controller;
 
 import java.io.IOException;
 import java.net.MalformedURLException;
+import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.List;
+import java.util.stream.Collectors;
 
 import org.springframework.core.io.Resource;
 import org.springframework.core.io.UrlResource;
@@ -76,6 +79,17 @@ public class FileUploadController {
         } catch (MalformedURLException e) {
             return ResponseEntity.badRequest().build();
         }
+    }
+
+    @GetMapping("/list")
+    public ResponseEntity<List<String>> listFiles() throws IOException {
+        List<String> fileNames = Files
+            .list(fileUploadLocation)
+            .map(Path::getFileName)
+            .map(Path::toString)
+            .collect(Collectors.toList());
+
+            return ResponseEntity.ok(fileNames);
     }
     
 }
